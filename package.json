@@ -5,6 +5,7 @@
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "start:watch": "nodemon -r ts-node/register ./src/index.ts",
+    "start:prod": "rimraf ./dist && tsc && ncp ./src/assets ./dist/assets && ncp ./src/pages ./dist/pages && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier . --write"
   },
@@ -35,8 +36,10 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.9.3",
+    "ncp": "^2.0.0",
     "nodemon": "^3.1.7",
     "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }
