@@ -1,0 +1,43 @@
+{
+  "name": "galafries-printer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node ./src/index.ts",
+    "start:watch": "nodemon -r ts-node/register ./src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier . --write"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@node-escpos/adapter": "^0.0.1",
+    "@node-escpos/bluetooth-adapter": "^0.1.0",
+    "@node-escpos/console": "^0.0.1",
+    "@node-escpos/core": "^0.6.0",
+    "@node-escpos/network-adapter": "^0.0.1",
+    "@node-escpos/screen": "^0.0.1",
+    "@node-escpos/serialport-adapter": "^1.0.0",
+    "@node-escpos/server": "^0.0.1",
+    "@node-escpos/usb-adapter": "^0.3.1",
+    "canvas": "^2.11.2",
+    "dotenv": "^16.4.5",
+    "escpos": "^3.0.0-alpha.6",
+    "escpos-usb": "^3.0.0-alpha.4",
+    "express": "^4.21.1",
+    "find-free-port": "^2.0.0",
+    "firebase-admin": "^13.0.1",
+    "ngrok": "^5.0.0-beta.2",
+    "patch-package": "^8.0.0",
+    "square": "^39.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.9.3",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
