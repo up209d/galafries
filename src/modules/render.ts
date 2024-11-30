@@ -2,9 +2,11 @@ import { Canvas, createCanvas, registerFont } from 'canvas';
 import fs from 'fs';
 
 registerFont(__dirname + '/../assets/fonts/PTSans-Narrow.ttf', { family: 'PT Sans Narrow' });
+registerFont(__dirname + '/../assets/fonts/PTSans-Narrow-Bold.ttf', { family: 'PT Sans Narrow Bold' });
 
 const PADDING = 40;
 const FONT = `"PT Sans Narrow", sans-serif`;
+const FONT_BOLD = `"PT Sans Narrow Bold", sans-serif`;
 const ORIGIN_REM = 36;
 const CURRENT_REM = 66;
 const RATIO = CURRENT_REM / ORIGIN_REM;
@@ -51,11 +53,11 @@ export function addIndexRow(
 ) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `${getCurrentPxSize(50)}px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(60)}px ${FONT_BOLD}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   ctx.fillText(`#${index}`, canvas.width / 2, yPosition.value);
-  yPosition.value += getCurrentPxSize(80) * VERTICAL_SPACE_RATIO;
+  yPosition.value += getCurrentPxSize(100) * VERTICAL_SPACE_RATIO;
 }
 
 export function addSubTitle(
