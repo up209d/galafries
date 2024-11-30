@@ -26,8 +26,9 @@ exports.renderReceipt = renderReceipt;
 exports.resizeCanvasForPrint = resizeCanvasForPrint;
 const canvas_1 = require("canvas");
 const fs_1 = __importDefault(require("fs"));
+(0, canvas_1.registerFont)('./src/assets/fonts/PTSans-Narrow.ttf', { family: 'PT Sans Narrow' });
 const PADDING = 40;
-const FONT = 'Consolas, Monaco, monospace';
+const FONT = `"PT Sans Narrow", sans-serif`;
 function breakSpaceToLine(text, charLimit) {
     const words = text.split(' ');
     let index = 0;

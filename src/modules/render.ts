@@ -1,8 +1,18 @@
-import { Canvas, createCanvas } from 'canvas';
+import { Canvas, createCanvas, registerFont } from 'canvas';
 import fs from 'fs';
 
+registerFont(__dirname + '/../assets/fonts/PTSans-Narrow.ttf', { family: 'PT Sans Narrow' });
+
 const PADDING = 40;
-const FONT = 'Consolas, Monaco, monospace';
+const FONT = `"PT Sans Narrow", sans-serif`;
+const ORIGIN_REM = 36;
+const CURRENT_REM = 66;
+const RATIO = CURRENT_REM / ORIGIN_REM;
+const VERTICAL_SPACE_RATIO = 0.85;
+
+export function getCurrentPxSize(pxByOriginRem) {
+  return Math.round(RATIO * pxByOriginRem)
+}
 
 export function breakSpaceToLine(text: string, charLimit: number) {
   const words = text.split(' ');
@@ -27,11 +37,11 @@ export function addTitle(
 ) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `96px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(96)}px ${FONT}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   ctx.fillText(title, canvas.width / 2, yPosition.value);
-  yPosition.value += 140;
+  yPosition.value += getCurrentPxSize(140) * VERTICAL_SPACE_RATIO;
 }
 
 export function addIndexRow(
@@ -41,11 +51,11 @@ export function addIndexRow(
 ) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `50px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(50)}px ${FONT}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   ctx.fillText(`#${index}`, canvas.width / 2, yPosition.value);
-  yPosition.value += 80;
+  yPosition.value += getCurrentPxSize(80) * VERTICAL_SPACE_RATIO;
 }
 
 export function addSubTitle(
@@ -55,7 +65,7 @@ export function addSubTitle(
 ) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `40px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(40)}px ${FONT}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   ctx.fillText(
@@ -63,17 +73,17 @@ export function addSubTitle(
     canvas.width / 2,
     yPosition.value,
   );
-  yPosition.value += 60;
+  yPosition.value += getCurrentPxSize(60) * VERTICAL_SPACE_RATIO;
 }
 
 export function addSplitter(canvas: Canvas, yPosition: { value: number }) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `60px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(60)}px ${FONT}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText('------------------------', canvas.width / 2, yPosition.value);
-  yPosition.value += 80;
+  ctx.fillText('----------------------------------------------------------', canvas.width / 2, yPosition.value);
+  yPosition.value += getCurrentPxSize(80) * VERTICAL_SPACE_RATIO;
 }
 
 export function addDateRow(
@@ -83,7 +93,7 @@ export function addDateRow(
 ) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `40px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(40)}px ${FONT}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   ctx.fillText(
@@ -100,7 +110,7 @@ export function addDateRow(
     canvas.width / 2,
     yPosition.value,
   );
-  yPosition.value += 60;
+  yPosition.value += getCurrentPxSize(60) * VERTICAL_SPACE_RATIO;
 }
 
 export function addHeadingRow(
@@ -111,7 +121,7 @@ export function addHeadingRow(
 ) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `50px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(50)}px ${FONT}`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
   ctx.fillText(heading, 0, yPosition.value);
@@ -120,7 +130,7 @@ export function addHeadingRow(
     ctx.textBaseline = 'top';
     ctx.fillText(price, canvas.width, yPosition.value);
   }
-  yPosition.value += 80;
+  yPosition.value += getCurrentPxSize(80) * VERTICAL_SPACE_RATIO;
 }
 
 export function addItemMainRow(
@@ -132,7 +142,7 @@ export function addItemMainRow(
 ) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `40px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(40)}px ${FONT}`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
   ctx.fillText(name, 0, yPosition.value);
@@ -142,7 +152,7 @@ export function addItemMainRow(
   ctx.textAlign = 'right';
   ctx.textBaseline = 'top';
   ctx.fillText(price, canvas.width, yPosition.value);
-  yPosition.value += 60;
+  yPosition.value += getCurrentPxSize(60) * VERTICAL_SPACE_RATIO;
 }
 
 export function addItemSubRow(
@@ -152,14 +162,14 @@ export function addItemSubRow(
 ) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `36px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(36)}px ${FONT}`;
   for (const line of breakSpaceToLine(sub, 30)) {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(line, 20, yPosition.value);
-    yPosition.value += 50;
+    yPosition.value += getCurrentPxSize(50) * VERTICAL_SPACE_RATIO;
   }
-  yPosition.value += 50;
+  yPosition.value += getCurrentPxSize(30) * VERTICAL_SPACE_RATIO;
 }
 
 export function addChargeRow(
@@ -170,14 +180,14 @@ export function addChargeRow(
 ) {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'black';
-  ctx.font = `40px ${FONT}`;
+  ctx.font = `${getCurrentPxSize(40)}px ${FONT}`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
   ctx.fillText(name, 0, yPosition.value);
   ctx.textAlign = 'right';
   ctx.textBaseline = 'top';
   ctx.fillText(price, canvas.width, yPosition.value);
-  yPosition.value += 60;
+  yPosition.value += getCurrentPxSize(60) * VERTICAL_SPACE_RATIO;
 }
 
 export type ReceiptData = {
@@ -210,10 +220,10 @@ export async function renderReceipt(
   const yPosition = {
     value: PADDING,
   };
-  const canvas = createCanvas(800, 3000);
+  const canvas = createCanvas(800, 8000);
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, 800, 3000);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   addTitle(canvas, yPosition, data.title);
   addIndexRow(canvas, yPosition, data.index % 1000);
@@ -249,7 +259,7 @@ export async function renderReceipt(
   }
   addSplitter(canvas, yPosition);
   addHeadingRow(canvas, yPosition, 'Totals', `$${data.totals}`);
-  yPosition.value += 50;
+  yPosition.value += getCurrentPxSize(50) + VERTICAL_SPACE_RATIO;
 
   const croppedCanvas = createCanvas(canvas.width, yPosition.value + PADDING);
   const croppedCtx = croppedCanvas.getContext('2d');
@@ -292,6 +302,7 @@ export async function resizeCanvasForPrint(
   const targetHeightPx = targetWidthPx / aspectRatio;
   const resizedCanvas = createCanvas(targetWidthPx, targetHeightPx);
   const resizedCtx = resizedCanvas.getContext('2d');
+  resizedCtx.imageSmoothingEnabled = false;
   resizedCtx.drawImage(
     canvas,
     0,

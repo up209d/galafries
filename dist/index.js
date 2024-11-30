@@ -83,7 +83,7 @@ app.post('/api/print-order', allowOnlyLocalRequestMiddleware, (req, res) => __aw
     }
     const order = yield (0, square_1.getSquareOrder)(orderId);
     const orderRef = yield (0, fireStore_1.getOrderById)(orderId);
-    const canvas = yield (0, render_1.renderReceipt)(58, (0, square_1.mapOrderToReceiptData)(order, orderRef === null || orderRef === void 0 ? void 0 : orderRef.index), false);
+    const canvas = yield (0, render_1.renderReceipt)(58, (0, square_1.mapOrderToReceiptData)(order, orderRef === null || orderRef === void 0 ? void 0 : orderRef.index), true);
     if (canvas) {
         yield (0, printer_1.printViaUsbImage)((yield (0, render_1.resizeCanvasForPrint)(canvas, 58)).toDataURL());
     }

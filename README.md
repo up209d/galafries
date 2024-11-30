@@ -1,5 +1,5 @@
-# Gala Fries
-Gala fries managing tools
+# GalaFries
+GalaFries managing tools
 
 ```
 yarn start

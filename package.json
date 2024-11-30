@@ -5,7 +5,8 @@
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "start:watch": "nodemon -r ts-node/register ./src/index.ts",
-    "start:prod": "rimraf ./dist && tsc && ncp ./src/assets ./dist/assets && ncp ./src/pages ./dist/pages && node ./dist/index.js",
+    "start:prod": "node ./dist/index.js",
+    "build": "rimraf ./dist && tsc && ncp ./src/assets ./dist/assets && ncp ./src/pages ./dist/pages",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier . --write"
   },
