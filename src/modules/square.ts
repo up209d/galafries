@@ -194,7 +194,7 @@ export function mapOrderToReceiptData(order?: Order, index?: number): ReceiptDat
       (order.lineItems || []).map((line) => ({
         name: line.name || '',
         quantity: parseInt(line.quantity || '0'),
-        price: (Number(line.basePriceMoney?.amount || 0) / 100).toFixed(2),
+        price: (Number(line.totalMoney?.amount || 0) / 100).toFixed(2),
         description: `${line.variationName} ${(line.modifiers || []).map((m) => m?.name).join(' ')} ${line.note || ''}`,
       })) || [],
     surcharges: (order.serviceCharges || []).map((charge) => ({

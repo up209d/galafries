@@ -101,8 +101,8 @@ export function addDateRow(
   ctx.fillText(
     date.toLocaleString('en-au', {
       weekday: 'short', // Full day name
-      year: 'numeric', // Full year (e.g., 2024)
-      month: 'short', // Full month name (e.g., October)
+      year: '2-digit', // Full year (e.g., 2024)
+      month: '2-digit', // Full month name (e.g., October)
       day: 'numeric', // Day of the month
       hour: '2-digit', // 2-digit hour
       minute: '2-digit', // 2-digit minute
