@@ -169,3 +169,13 @@ findFreePort(port, (err, freePort) => {
     }
   });
 });
+
+process.on('SIGINT', () => {
+  console.log('Process interrupted! Exiting...');
+  process.exit();
+});
+
+process.on('SIGTERM', () => {
+  console.log('Process terminated! Exiting...');
+  process.exit();
+});
