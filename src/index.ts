@@ -6,6 +6,7 @@ import {
   configWebhook,
   getSquareOrder,
   getSquareOrders,
+  getSquareTodayOrders,
   mapOrderToReceiptData,
   verifyWebhookMiddlewareGenerator,
 } from './modules/square';
@@ -48,6 +49,30 @@ app.get('/orders', allowOnlyLocalRequestMiddleware, (req, res) => {
 app.get('/health', async (req, res) => {
   console.log('Connection IP: ', req.ip);
   res.send({ status: 'ok' });
+});
+
+app.get('/api/orders/today', allowOnlyLocalRequestMiddleware, async (req, res) => {
+  const count = req.query.count
+    ? parseInt(req.query.count as string)
+    : undefined;
+  const orders = await getSquareTodayOrders(count);
+  const orderRefs = await getLastOrders(count);
+  res.send({
+    orders: (orders || []).map((order) => ({
+      id: order.id,
+      reference:
+        orderRefs
+          .find((ref) => ref.id === order.id)
+          ?.index?.toString()
+          .padStart(5, '0') || '',
+      date: order.createdAt,
+      total: (Number(order.totalMoney?.amount || 0) / 100).toFixed(2),
+      status: order.state,
+      tenders: (order.tenders || []).map((tender) => ({
+        id: tender.id?.slice(0, 4),
+      })),
+    })),
+  });
 });
 
 app.get('/api/orders', allowOnlyLocalRequestMiddleware, async (req, res) => {

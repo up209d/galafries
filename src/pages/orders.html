@@ -27,12 +27,13 @@
 
     <!-- React Component & Script Block (with JSX) -->
     <script type="text/babel">
-      const { useState, useEffect } = React;
+      const { useState, useMemo, useEffect } = React;
 
       // React component to fetch and render the table
       const OrdersTable = () => {
         const searchParams = new URLSearchParams(window.location.search);
         const orderCount = searchParams.get('count') || '50'; // Get orderId query parameter
+        const filter = searchParams.get('filter') || ''; // Filter for backend like date
         const [orders, setOrders] = useState([]); // Store orders data
         const [filteredOrders, setFilteredOrders] = useState([]); // Store filtered orders
         const [loading, setLoading] = useState(true); // Loading state
@@ -43,7 +44,7 @@
           try {
             setLoading(true); // Set loading state to true before fetching data
             const response = await fetch(
-              `http://localhost:3333/api/orders?count=${orderCount}`,
+              `http://localhost:3333/api/orders${filter ? `/${filter}` : ''}?count=${orderCount}`,
             );
             const data = await response.json();
             setOrders(data.orders); // Set the orders state with the fetched data
@@ -111,11 +112,16 @@
           }
         };
 
-        const countNavigate = (count) => {
+        const countNavigate = (count, filter) => {
           const currentUrl = new URL(window.location);
           currentUrl.searchParams.set('count', count);
+          currentUrl.searchParams.set('filter', filter);
           window.location.href = currentUrl;
         };
+
+        const currentSum = useMemo(() => {
+            return orders?.reduce((total, order) => total + parseFloat(order.total), 0) || 0
+        }, [orders]);
 
         // Fetch orders when the component mounts
         useEffect(() => {
@@ -158,41 +164,48 @@
                 disabled={filteredOrders.some((order) => order.isPrinting)}
                 className="px-4 py-2 border rounded-md"
               />
-
-              <button
-                disabled={orderCount === '20'}
-                onClick={() => countNavigate(20)}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 disabled:bg-gray-800"
-              >
-                20
-              </button>
               <button
                 disabled={orderCount === '50'}
-                onClick={() => countNavigate(50)}
+                onClick={() => countNavigate(50, filter)}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 disabled:bg-gray-800"
               >
                 50
               </button>
               <button
                 disabled={orderCount === '100'}
-                onClick={() => countNavigate(100)}
+                onClick={() => countNavigate(100, filter)}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 disabled:bg-gray-800"
               >
                 100
               </button>
               <button
                 disabled={orderCount === '200'}
-                onClick={() => countNavigate(200)}
+                onClick={() => countNavigate(200, filter)}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 disabled:bg-gray-800"
               >
                 200
               </button>
               <button
                 disabled={orderCount === '500'}
-                onClick={() => countNavigate(500)}
+                onClick={() => countNavigate(500, filter)}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 disabled:bg-gray-800"
               >
                 500
+              </button>
+              <div className="min-h-full flex flex-row items-center">|</div>
+              <button
+                disabled={filter === 'today'}
+                onClick={() => countNavigate(orderCount, 'today')}
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 disabled:bg-gray-800"
+              >
+                Today
+              </button>
+              <button
+                disabled={filter === ''}
+                onClick={() => countNavigate(orderCount, '')}
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 disabled:bg-gray-800"
+              >
+                All
               </button>
             </div>
 
@@ -205,7 +218,7 @@
                     <th className="px-4 py-2 border-b bg-gray-200 text-right">
                       Tender
                     </th>
-                    <th className="px-4 py-2 border-b bg-gray-200">Order</th>
+                    <th className="px-4 py-2 border-b bg-gray-200">Order ({orders?.length || 0}) | (${currentSum?.toFixed(2)})</th>
                     <th className="px-4 py-2 border-b bg-gray-200 text-right">
                       Total
                     </th>

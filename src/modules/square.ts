@@ -2,6 +2,7 @@ import config from '../config';
 import { Client, Environment, Order, WebhooksHelper } from 'square';
 import { ReceiptData } from './render';
 import { isIpLocal } from './utils';
+import moment from 'moment-timezone';
 
 export const client = new Client({
   environment: Environment.Production,
@@ -130,7 +131,10 @@ export async function getSquareOrder(orderId: string) {
   }
 }
 
-export async function updateSquareOrderReference(order: Order, reference: string) {
+export async function updateSquareOrderReference(
+  order: Order,
+  reference: string,
+) {
   const orderApi = client.ordersApi;
   const orderId = order.id!;
   const locationId = order.locationId!;
@@ -171,7 +175,35 @@ export async function getSquareOrders(count: number = 50) {
   }
 }
 
-export function mapOrderToReceiptData(order?: Order, index?: number): ReceiptData {
+export async function getSquareTodayOrders(count: number = 50) {
+  const orderApi = client.ordersApi;
+  try {
+    const {
+      result: { orders },
+    } = await orderApi.searchOrders({
+      limit: count,
+      locationIds: [config.LOCATION_ID!],
+      query: {
+        filter: {
+          dateTimeFilter: {
+            createdAt: { startAt: moment().tz('Australia/Sydney').startOf('day').format('YYYY-MM-DDTHH:mm:ssZ') },
+          },
+        },
+        sort: { sortField: 'CREATED_AT', sortOrder: 'DESC' },
+      },
+      returnEntries: false,
+    });
+    console.log(`Today ${count} orders received: `);
+    return orders;
+  } catch (error) {
+    console.error(`Error getting orders: `, error);
+  }
+}
+
+export function mapOrderToReceiptData(
+  order?: Order,
+  index?: number,
+): ReceiptData {
   const date = new Date(order?.createdAt!);
   if (!order) {
     return {
