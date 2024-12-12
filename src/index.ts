@@ -150,7 +150,6 @@ app.post(
     const canvas = await renderReceipt(58, mapOrderToReceiptData(order, orderRef?.index), false);
     if (canvas) {
       await printViaUsbImage((await resizeCanvasForPrint(canvas, 58)).toDataURL());
-      await printViaUsbImage((await resizeCanvasForPrint(canvas, 58)).toDataURL());
     }
   },
 );
