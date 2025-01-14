@@ -238,5 +238,6 @@ export function mapOrderToReceiptData(
       price: (Number(discount.appliedMoney?.amount || 0) / 100).toFixed(2),
     })),
     totals: (Number(order.totalMoney?.amount || 0) / 100).toFixed(2),
+    note: order.metadata?.note || ''
   };
 }

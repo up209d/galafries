@@ -192,6 +192,25 @@ export function addChargeRow(
   yPosition.value += getCurrentPxSize(60) * VERTICAL_SPACE_RATIO;
 }
 
+export function addNoteRow(
+  canvas: Canvas,
+  yPosition: { value: number },
+  note?: string,
+) {
+  if (note) {
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'black';
+    ctx.font = `${getCurrentPxSize(36)}px ${FONT}`;
+    for (const line of breakSpaceToLine(note, 25)) {
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(line, 20, yPosition.value);
+      yPosition.value += getCurrentPxSize(50) * VERTICAL_SPACE_RATIO;
+    }
+    yPosition.value += getCurrentPxSize(30) * VERTICAL_SPACE_RATIO;
+  }
+}
+
 export type ReceiptData = {
   title: string;
   id: string;
@@ -212,6 +231,7 @@ export type ReceiptData = {
     price: string;
   }[],
   totals: string;
+  note?: string;
 };
 
 export async function renderReceipt(
@@ -261,6 +281,9 @@ export async function renderReceipt(
   }
   addSplitter(canvas, yPosition);
   addHeadingRow(canvas, yPosition, 'Totals', `$${data.totals}`);
+  yPosition.value += getCurrentPxSize(50) + VERTICAL_SPACE_RATIO;
+
+  addNoteRow(canvas, yPosition, data.note);
   yPosition.value += getCurrentPxSize(50) + VERTICAL_SPACE_RATIO;
 
   const croppedCanvas = createCanvas(canvas.width, yPosition.value + PADDING);
@@ -368,6 +391,7 @@ renderReceipt(
       },
     ],
     totals: '555.05',
+    note: 'ONLINE ORDER: PICKUP AT: 01:16 AM - Test Order'
   },
   true,
 )
