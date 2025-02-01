@@ -14,7 +14,11 @@ import { renderReceipt, resizeCanvasForPrint } from './modules/render';
 import { printViaUsbImage } from './modules/printer';
 import path from 'path';
 import { isIpLocal } from './modules/utils';
-import { addOrderReference, getLastOrders, getOrderById } from './modules/fireStore';
+import {
+  addOrderReference,
+  getLastOrders,
+  getOrderById,
+} from './modules/fireStore';
 
 // Initialize Express app
 const app = express();
@@ -51,29 +55,33 @@ app.get('/health', async (req, res) => {
   res.send({ status: 'ok' });
 });
 
-app.get('/api/orders/today', allowOnlyLocalRequestMiddleware, async (req, res) => {
-  const count = req.query.count
-    ? parseInt(req.query.count as string)
-    : undefined;
-  const orders = await getSquareTodayOrders(count);
-  const orderRefs = await getLastOrders(count);
-  res.send({
-    orders: (orders || []).map((order) => ({
-      id: order.id,
-      reference:
-        orderRefs
-          .find((ref) => ref.id === order.id)
-          ?.index?.toString()
-          .padStart(5, '0') || '',
-      date: order.createdAt,
-      total: (Number(order.totalMoney?.amount || 0) / 100).toFixed(2),
-      status: order.state,
-      tenders: (order.tenders || []).map((tender) => ({
-        id: tender.id?.slice(0, 4),
+app.get(
+  '/api/orders/today',
+  allowOnlyLocalRequestMiddleware,
+  async (req, res) => {
+    const count = req.query.count
+      ? parseInt(req.query.count as string)
+      : undefined;
+    const orders = await getSquareTodayOrders(count);
+    const orderRefs = await getLastOrders(count);
+    res.send({
+      orders: (orders || []).map((order) => ({
+        id: order.id,
+        reference:
+          orderRefs
+            .find((ref) => ref.id === order.id)
+            ?.index?.toString()
+            .padStart(5, '0') || '',
+        date: order.createdAt,
+        total: (Number(order.totalMoney?.amount || 0) / 100).toFixed(2),
+        status: order.state,
+        tenders: (order.tenders || []).map((tender) => ({
+          id: tender.id?.slice(0, 4),
+        })),
       })),
-    })),
-  });
-});
+    });
+  },
+);
 
 app.get('/api/orders', allowOnlyLocalRequestMiddleware, async (req, res) => {
   const count = req.query.count
@@ -116,7 +124,9 @@ app.post(
       false,
     );
     if (canvas) {
-      await printViaUsbImage((await resizeCanvasForPrint(canvas, 58)).toDataURL());
+      await printViaUsbImage(
+        (await resizeCanvasForPrint(canvas, 58)).toDataURL(),
+      );
     }
   },
 );
@@ -147,9 +157,15 @@ app.post(
     if (!order) {
       return;
     }
-    const canvas = await renderReceipt(58, mapOrderToReceiptData(order, orderRef?.index), false);
+    const canvas = await renderReceipt(
+      58,
+      mapOrderToReceiptData(order, orderRef?.index),
+      false,
+    );
     if (canvas) {
-      await printViaUsbImage((await resizeCanvasForPrint(canvas, 58)).toDataURL());
+      await printViaUsbImage(
+        (await resizeCanvasForPrint(canvas, 58)).toDataURL(),
+      );
     }
   },
 );
@@ -164,10 +180,22 @@ findFreePort(port, (err, freePort) => {
     console.log(`Server running on http://localhost:${freePort}`);
     if (config.IS_TUNNELING) {
       const url = await setupTunneling(freePort);
-      await configWebhook(config.LOCATION_ID, 'payment-on-created', url, ['payment.created']);
+      await configWebhook(config.LOCATION_ID, 'payment-on-created', url, [
+        'payment.created',
+      ]);
     }
   });
 });
+
+// const test = async () => {
+//   const testOrder = await getSquareOrder('PEG0EtqLve7tkBKnF4oUHDA2MBfZY');
+//   console.log('Test Order: ', testOrder?.lineItems?.[0]);
+//   if (testOrder) {
+//     await renderReceipt(58, mapOrderToReceiptData(testOrder, 9999), true);
+//   }
+// };
+
+// test().finally(() => console.log('Test Order processed!'));
 
 process.on('SIGINT', () => {
   console.log('Process interrupted! Exiting...');

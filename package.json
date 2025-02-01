@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon -r ts-node/register ./src/index.ts",
     "start": "ts-node ./src/index.ts",
     "start:watch": "nodemon -r ts-node/register ./src/index.ts",
     "start:prod": "node ./dist/index.js",

@@ -186,7 +186,12 @@ export async function getSquareTodayOrders(count: number = 50) {
       query: {
         filter: {
           dateTimeFilter: {
-            createdAt: { startAt: moment().tz('Australia/Sydney').startOf('day').format('YYYY-MM-DDTHH:mm:ssZ') },
+            createdAt: {
+              startAt: moment()
+                .tz('Australia/Sydney')
+                .startOf('day')
+                .format('YYYY-MM-DDTHH:mm:ssZ'),
+            },
           },
         },
         sort: { sortField: 'CREATED_AT', sortOrder: 'DESC' },
@@ -199,6 +204,10 @@ export async function getSquareTodayOrders(count: number = 50) {
     console.error(`Error getting orders: `, error);
   }
 }
+
+export const getModifierQuantity = (o: any) => {
+  return ((o?.quantity || '1') === '1') ? '' : ` x${o?.quantity}`;
+};
 
 export function mapOrderToReceiptData(
   order?: Order,
@@ -227,7 +236,7 @@ export function mapOrderToReceiptData(
         name: line.name || '',
         quantity: parseInt(line.quantity || '0'),
         price: (Number(line.totalMoney?.amount || 0) / 100).toFixed(2),
-        description: `${line.variationName} ${(line.modifiers || []).map((m) => m?.name).join(' ')} ${line.note || ''}`,
+        description: `${line.variationName}, ${(line.modifiers || []).map((m) => `${m?.name}${getModifierQuantity(m)}`).join(',')}, ${line.note || ''}`,
       })) || [],
     surcharges: (order.serviceCharges || []).map((charge) => ({
       name: charge.name || '',
@@ -238,6 +247,6 @@ export function mapOrderToReceiptData(
       price: (Number(discount.appliedMoney?.amount || 0) / 100).toFixed(2),
     })),
     totals: (Number(order.totalMoney?.amount || 0) / 100).toFixed(2),
-    note: order.metadata?.note || ''
+    note: order.metadata?.note || '',
   };
 }
